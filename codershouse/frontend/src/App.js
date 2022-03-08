@@ -1,9 +1,9 @@
 import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Navigation from "./components/shared/Navigation/Navigation";
-import { Register } from "./pages/Register/Register";
-import Login from "./pages/Login/Login";
+import Authenticate from "./pages/Authenticate/Authenticate";
+const isAuth = true;
 
 function App() {
   return (
@@ -11,11 +11,35 @@ function App() {
       <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <GuestRoute path="/authenticate">
+          <Authenticate />
+        </GuestRoute>
+        {/* <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} /> */}
       </Routes>
     </BrowserRouter>
   );
 }
+
+const GuestRoute = ({ children, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={({ location }) => {
+        <>
+          isAuth ? (
+          <Navigate
+            to={{
+              pathname: "/rooms",
+              state: { from: location },
+            }}
+            replace={true}
+          />
+          ) : ( children )
+        </>;
+      }}
+    ></Route>
+  );
+};
 
 export default App;
